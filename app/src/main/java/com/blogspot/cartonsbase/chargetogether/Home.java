@@ -19,6 +19,8 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import com.blogspot.cartonsbase.chargetogether.Network.ContactServer;
+
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -111,14 +113,8 @@ public class Home extends Activity implements LocationListener {
             }
             locationManager.requestLocationUpdates( bestGPSProvider, 1000, 1, this );
 
-            /*Timer timer = new Timer(  );
-            timer.schedule( new TimerTask() {
-                @Override
-                public void run() {
-
-                }
-            }, 5000 );*/
-
+            ContactServer contactServer = new ContactServer();
+            contactServer.getHelp( latitude, longitude );
         }
     }
 
