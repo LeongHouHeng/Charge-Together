@@ -30,6 +30,7 @@ import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -41,19 +42,32 @@ import static android.Manifest.permission.READ_CONTACTS;
  */
 public class LoginActivity extends Activity {
 
+    Button login;
+    EditText etv_username;
+    String UserName;
+
     @Override
     protected void onCreate( Bundle savedInstanceState ) {
         super.onCreate( savedInstanceState );
         setContentView( R.layout.activity_login );
-        Button btn = (Button)findViewById( R.id.email_sign_in_button );
-        btn.setOnClickListener( new OnClickListener() {
+
+        etv_username = (EditText)findViewById( R.id.login_name );
+        login = (Button)findViewById( R.id.email_sign_in_button );
+        login.setOnClickListener( new OnClickListener() {
             @Override
             public void onClick( View v ) {
-                //TODO: Send data to server
-                Intent intent = new Intent(  );
-                intent.setClass( LoginActivity.this, Home.class );
-                startActivity( intent );
-                finish();
+
+                if ( !etv_username.getText().toString().equals( "" ) ) {
+                    UserName = etv_username.getText().toString();
+
+                    Intent intent = new Intent();
+                    intent.setClass( LoginActivity.this, Home.class );
+                    intent.putExtra( "UserName", UserName );
+                    startActivity( intent );
+                    finish();
+                }else{
+                    Toast.makeText(getApplicationContext(), "Please type your name...", Toast.LENGTH_SHORT).show();
+                }
             }
         } );
     }
