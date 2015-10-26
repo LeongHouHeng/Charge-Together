@@ -15,6 +15,8 @@ import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.Toast;
@@ -113,8 +115,15 @@ public class Home extends Activity implements LocationListener {
             }
             locationManager.requestLocationUpdates( bestGPSProvider, 1000, 1, this );
 
-            ContactServer contactServer = new ContactServer();
-            contactServer.getHelp( latitude, longitude );
+            ltv_provider.setOnItemClickListener( new AdapterView.OnItemClickListener() {
+
+                @Override
+                public void onItemClick( AdapterView< ? > parent, View view, int position, long
+                        id ) {
+                    ContactServer contactServer = new ContactServer(getApplicationContext());
+                    contactServer.getHelp( latitude, longitude );
+                }
+            });
         }
     }
 

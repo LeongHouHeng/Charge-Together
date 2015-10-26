@@ -2,6 +2,7 @@ package com.blogspot.cartonsbase.chargetogether.Network;
 
 import android.content.Context;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
@@ -10,6 +11,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.VolleyLog;
 import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 
 import org.json.JSONObject;
@@ -24,39 +26,38 @@ public class ContactServer {
     String url_getHelp = "http://home.puiching.edu.mo/ChargerTogether/NeedHelp.php";
     String url_sendHelp = "http://home.puiching.edu.mo/ChargerTogether/Help.php";
     VelloySingleton velloySingleton;
+    Context context;
 
-    public ContactServer(){
-        velloySingleton = new VelloySingleton();
+    public ContactServer(Context context){
+        velloySingleton = new VelloySingleton(context);
+        this.context = context;
     }
 
     public void getHelp( final double GPSx, final double GPSy){
 
-        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest( Request.Method.POST, url_getHelp,
-                null, new Response.Listener< JSONObject >() {
+        StringRequest stringRequest = new StringRequest( Request.Method.POST, url_getHelp, new Response.Listener< String >() {
 
             @Override
-            public void onResponse( JSONObject response ) {
+            public void onResponse( String response ) {
                 Log.d( TAG, response.toString() );
+
             }
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse( VolleyError error ) {
-                VolleyLog.d( TAG, "Error: " + error.getMessage() );
+                VolleyLog.v( "Error: ", error.getMessage() );
             }
         } ){
-
             @Override
-            protected Map<String, String> getParams() {
-                Map<String, String> params = new HashMap<String, String>();
-                params.put("GPSx", String.valueOf( GPSx ));
-                params.put("GPSy", String.valueOf( GPSy ));
-
+            protected Map< String, String > getParams() {
+                Map<String, String> params = new HashMap<String, String>(  );
+                params.put( "GPS_x", String.valueOf( GPSx ) );
+                params.put( "GPS_y", String.valueOf( GPSy ) );
                 return params;
             }
         };
 
-        //// TODO: 26/10/15 NULL POINTER HERE , PROBLEMS MAYBE IN VelloySingleton.java
-        VelloySingleton.getInstance().addToRequestQueue( jsonObjectRequest );
+        VelloySingleton.getInstance(context).addToRequestQueue( stringRequest );
     }
 
 }
