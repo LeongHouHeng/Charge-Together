@@ -27,7 +27,6 @@ public class ContactServer {
     String url_sendHelp = "http://home.puiching.edu.mo/ChargerTogether/Help.php";
     VelloySingleton velloySingleton;
     Context context;
-
     public ContactServer(Context context){
         velloySingleton = new VelloySingleton(context);
         this.context = context;
