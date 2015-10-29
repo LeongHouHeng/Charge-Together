@@ -3,6 +3,9 @@ package com.blogspot.cartonsbase.chargetogether;
 import android.Manifest;
 import android.annotation.TargetApi;
 import android.app.Activity;
+import android.app.Fragment;
+import android.app.FragmentManager;
+import android.app.FragmentTransaction;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -13,11 +16,15 @@ import android.location.LocationManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.FragmentActivity;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
+import android.view.Display;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -26,11 +33,11 @@ import com.blogspot.cartonsbase.chargetogether.Network.ContactServer;
 import java.util.Timer;
 import java.util.TimerTask;
 
-public class Home extends Activity implements LocationListener {
+public class Home extends FragmentActivity implements LocationListener {
     private static final String TAG = "Home Debugger";
 
-    ArrayAdapter< String > provider_list;
-    ListView ltv_provider;
+    //ArrayAdapter< String > provider_list;
+    //ListView ltv_provider;
 
     String UserName;
 
@@ -40,19 +47,23 @@ public class Home extends Activity implements LocationListener {
     LocationManager locationManager;
     boolean GPSisOPEN = false;
     Location location;
+
+    Button btn_showflag;
+
+    Fragment infoFragment;
+    FragmentManager fragmentManager;
+
     @Override
     @TargetApi(23)
     protected void onCreate( Bundle savedInstanceState ) {
         super.onCreate( savedInstanceState );
         setContentView( R.layout.activity_home );
 
-        provider_list = new ArrayAdapter< String >( this, android.R.layout.simple_list_item_1 );
+        /*provider_list = new ArrayAdapter< String >( this, android.R.layout.simple_list_item_1 );
         ltv_provider = ( ListView ) findViewById( R.id.ltv_provider_list );
         provider_list.add( "1" );
-        ltv_provider.setAdapter( provider_list );
-
-        Bundle bundle = this.getIntent().getExtras();
-        UserName = bundle.getString( "UserName" );
+        ltv_provider.setAdapter( provider_list );*/
+        infoFragment = new InfoWindowFragment();
 
         locationManager = ( LocationManager ) getSystemService( Context
                 .LOCATION_SERVICE );
@@ -61,6 +72,21 @@ public class Home extends Activity implements LocationListener {
             GPSisOPEN = true;
         //    GPSSearch();
         }
+
+        btn_showflag = (Button)findViewById( R.id.btn_showFrag );
+        btn_showflag.setOnClickListener( new View.OnClickListener() {
+            @Override
+            public void onClick( View v ) {
+
+                fragmentManager = getFragmentManager();
+                FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+                fragmentTransaction.add( R.id.activity_home, infoFragment, "first" );
+                /*fragmentTransaction.setCustomAnimations( R.transition.tween, R.transition.no_change,
+                        R.transition.tween, R.transition.no_change );*/
+                fragmentTransaction.commit();
+
+            }
+        } );
 
 
     }
@@ -115,7 +141,7 @@ public class Home extends Activity implements LocationListener {
             }
             locationManager.requestLocationUpdates( bestGPSProvider, 1000, 1, this );
 
-            ltv_provider.setOnItemClickListener( new AdapterView.OnItemClickListener() {
+            /*ltv_provider.setOnItemClickListener( new AdapterView.OnItemClickListener() {
 
                 @Override
                 public void onItemClick( AdapterView< ? > parent, View view, int position, long
@@ -123,7 +149,7 @@ public class Home extends Activity implements LocationListener {
                     ContactServer contactServer = new ContactServer(getApplicationContext());
                     contactServer.getHelp( latitude, longitude );
                 }
-            });
+            });*/
         }
     }
 

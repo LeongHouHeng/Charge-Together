@@ -61,7 +61,7 @@ public class LoginActivity extends Activity {
                     UserName = etv_username.getText().toString();
 
                     Intent intent = new Intent();
-                    intent.setClass( LoginActivity.this, Home.class );
+                    intent.setClass( LoginActivity.this, ChooseTypeActivity.class );
                     intent.putExtra( "UserName", UserName );
                     startActivity( intent );
                     finish();

@@ -26,6 +26,7 @@ public class ContactServer {
     String url_getHelp = "http://home.puiching.edu.mo/ChargerTogether/NeedHelp.php";
     String url_sendHelp = "http://home.puiching.edu.mo/ChargerTogether/Help.php";
     VelloySingleton velloySingleton;
+
     Context context;
     public ContactServer(Context context){
         velloySingleton = new VelloySingleton(context);
@@ -39,7 +40,6 @@ public class ContactServer {
             @Override
             public void onResponse( String response ) {
                 Log.d( TAG, response.toString() );
-
             }
         }, new Response.ErrorListener() {
             @Override
@@ -57,6 +57,10 @@ public class ContactServer {
         };
 
         VelloySingleton.getInstance(context).addToRequestQueue( stringRequest );
+    }
+
+    public void sendHelp(double GPSx, double GPSy, int UserType, String PowerBankSpec, double prefer_GPSx, double prefer_GPSy, String prefer_time, String bluetooth_mac_address){
+       //TODO: Provider post info...
     }
 
 }
