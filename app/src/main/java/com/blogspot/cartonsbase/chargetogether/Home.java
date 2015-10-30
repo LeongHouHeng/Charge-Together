@@ -29,11 +29,17 @@ import android.widget.ListView;
 import android.widget.Toast;
 
 import com.blogspot.cartonsbase.chargetogether.Network.ContactServer;
+import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.MapFragment;
+import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.util.Timer;
 import java.util.TimerTask;
 
-public class Home extends FragmentActivity implements LocationListener {
+public class Home extends FragmentActivity implements LocationListener, OnMapReadyCallback {
     private static final String TAG = "Home Debugger";
 
     //ArrayAdapter< String > provider_list;
@@ -53,11 +59,15 @@ public class Home extends FragmentActivity implements LocationListener {
     Fragment infoFragment;
     FragmentManager fragmentManager;
 
+    GoogleMap map;
+
     @Override
     @TargetApi(23)
     protected void onCreate( Bundle savedInstanceState ) {
         super.onCreate( savedInstanceState );
         setContentView( R.layout.activity_home );
+
+        //map = ((MapFragment ) getFragmentManager().findFragmentById(R.id.frag_map)).getMap();
 
         /*provider_list = new ArrayAdapter< String >( this, android.R.layout.simple_list_item_1 );
         ltv_provider = ( ListView ) findViewById( R.id.ltv_provider_list );
@@ -166,5 +176,13 @@ public class Home extends FragmentActivity implements LocationListener {
             }
             locationManager.removeUpdates( this );
         }
+    }
+
+    @Override
+    public void onMapReady( GoogleMap googleMap ) {
+        map = googleMap;
+        LatLng sydney = new LatLng( - 34, 151 );
+        map.addMarker( new MarkerOptions().position( sydney ).title( "Marker in Sydney" ) );
+        map.moveCamera( CameraUpdateFactory.newLatLng( sydney ) );
     }
 }
