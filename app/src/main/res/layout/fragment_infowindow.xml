@@ -2,14 +2,22 @@
               xmlns:tools="http://schemas.android.com/tools"
               android:orientation="vertical"
               android:layout_width="wrap_content"
-              android:layout_height="wrap_content"
+              android:layout_height="50dp"
     >
 
-    <TextView
+    <!--<TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="ZZZZZZ"
         android:textSize="35dp"
+        />-->
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/UserName"
+        android:textSize="20dp"
+        android:text="UserName: "
         />
 
 </LinearLayout>

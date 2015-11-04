@@ -8,12 +8,12 @@
               android:id="@+id/activity_home"
     >
 
-    <Button
+   <!-- <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/btn_showFrag"
         android:text="show"
-        />
+        />-->
 
     <!--<fragment
         android:id="@+id/frag_map"

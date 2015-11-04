@@ -9,6 +9,7 @@ import android.app.FragmentTransaction;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.BitmapFactory;
 import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationListener;
@@ -29,11 +30,14 @@ import android.widget.ListView;
 import android.widget.Toast;
 
 import com.blogspot.cartonsbase.chargetogether.Network.ContactServer;
+import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.util.Timer;
@@ -45,7 +49,7 @@ public class Home extends FragmentActivity implements LocationListener, OnMapRea
     //ArrayAdapter< String > provider_list;
     //ListView ltv_provider;
 
-    String UserName;
+    String UserName = "User";
 
     double latitude;    //GPSx
     double longitude;   //GPSy
@@ -54,20 +58,21 @@ public class Home extends FragmentActivity implements LocationListener, OnMapRea
     boolean GPSisOPEN = false;
     Location location;
 
-    Button btn_showflag;
+    //Button btn_showflag;
 
     Fragment infoFragment;
     FragmentManager fragmentManager;
 
     GoogleMap map;
+    MapFragment fragment_map;
+
+    boolean fragmentIsShowed = false;
 
     @Override
-    @TargetApi(23)
+    @TargetApi( 23 )
     protected void onCreate( Bundle savedInstanceState ) {
         super.onCreate( savedInstanceState );
         setContentView( R.layout.activity_home );
-
-        //map = ((MapFragment ) getFragmentManager().findFragmentById(R.id.frag_map)).getMap();
 
         /*provider_list = new ArrayAdapter< String >( this, android.R.layout.simple_list_item_1 );
         ltv_provider = ( ListView ) findViewById( R.id.ltv_provider_list );
@@ -80,10 +85,12 @@ public class Home extends FragmentActivity implements LocationListener, OnMapRea
         if ( locationManager.isProviderEnabled( LocationManager.GPS_PROVIDER ) ||
                 locationManager.isProviderEnabled( LocationManager.NETWORK_PROVIDER ) ) {
             GPSisOPEN = true;
-        //    GPSSearch();
+            //    GPSSearch();
         }
+        fragment_map = (MapFragment) getFragmentManager().findFragmentById( R.id.frag_map );
+        fragment_map.getMapAsync( this );
 
-        btn_showflag = (Button)findViewById( R.id.btn_showFrag );
+        /*btn_showflag = (Button)findViewById( R.id.btn_showFrag );
         btn_showflag.setOnClickListener( new View.OnClickListener() {
             @Override
             public void onClick( View v ) {
@@ -91,12 +98,12 @@ public class Home extends FragmentActivity implements LocationListener, OnMapRea
                 fragmentManager = getFragmentManager();
                 FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
                 fragmentTransaction.add( R.id.activity_home, infoFragment, "first" );
-                /*fragmentTransaction.setCustomAnimations( R.transition.tween, R.transition.no_change,
-                        R.transition.tween, R.transition.no_change );*/
+                fragmentTransaction.setCustomAnimations( R.transition.tween, R.transition.no_change,
+                        R.transition.tween, R.transition.no_change );
                 fragmentTransaction.commit();
 
             }
-        } );
+        } );*/
 
 
     }
@@ -104,19 +111,26 @@ public class Home extends FragmentActivity implements LocationListener, OnMapRea
     public void GPSSearch() {
         if ( Build.VERSION.SDK_INT >= 23 &&
                 ContextCompat.checkSelfPermission( getApplicationContext(), android.Manifest.permission.ACCESS_FINE_LOCATION ) != PackageManager.PERMISSION_GRANTED &&
-                ContextCompat.checkSelfPermission( getApplicationContext(), android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            return  ;
+                ContextCompat.checkSelfPermission( getApplicationContext(), android.Manifest.permission.ACCESS_COARSE_LOCATION ) != PackageManager.PERMISSION_GRANTED ) {
+            return;
         }
         Criteria criteria = new Criteria();
-        bestGPSProvider = locationManager.getBestProvider( criteria, true );
+        bestGPSProvider = locationManager.getBestProvider(criteria, true);
 
-        location = locationManager.getLastKnownLocation( bestGPSProvider );
+        location = locationManager.getLastKnownLocation(bestGPSProvider);
 
         latitude = location.getLatitude();
         longitude = location.getLongitude();
 
         Toast.makeText( getApplicationContext(), "Latitude: " + latitude + "\nLongitude" + longitude, Toast.LENGTH_SHORT ).show();
-        Log.d( TAG, "Latitude: " + latitude + "\nLongitude" + longitude );
+        Log.d(TAG, "Latitude: " + latitude + "\nLongitude" + longitude);
+
+        /*LatLng IamHere = new LatLng(latitude, longitude );
+        map.addMarker( new MarkerOptions().position( IamHere ).title( "I am Here" ).snippet
+                ( "and" + " snippet" ).icon( BitmapDescriptorFactory.defaultMarker( BitmapDescriptorFactory
+                .HUE_BLUE ) ) );
+        map.moveCamera( CameraUpdateFactory.newLatLngZoom( IamHere, 15.0f ) );*/
+
     }
 
     @Override
@@ -180,9 +194,44 @@ public class Home extends FragmentActivity implements LocationListener, OnMapRea
 
     @Override
     public void onMapReady( GoogleMap googleMap ) {
+        //Toast.makeText( getApplicationContext(), "onMapReady", Toast.LENGTH_SHORT ).show();
         map = googleMap;
-        LatLng sydney = new LatLng( - 34, 151 );
-        map.addMarker( new MarkerOptions().position( sydney ).title( "Marker in Sydney" ) );
-        map.moveCamera( CameraUpdateFactory.newLatLng( sydney ) );
+        LatLng IamHere = new LatLng(latitude, longitude );
+        map.addMarker( new MarkerOptions().position( IamHere ).title( "I am Here" ).snippet
+                ( "and" + " snippet" ).icon( BitmapDescriptorFactory.defaultMarker( BitmapDescriptorFactory
+                .HUE_BLUE ) ) );
+        map.moveCamera(CameraUpdateFactory.newLatLngZoom(IamHere, 15.0f));
+
+        map.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
+            @Override
+            public boolean onMarkerClick(Marker marker) {
+                //Toast.makeText(getApplicationContext(), "Click", Toast.LENGTH_SHORT).show();
+                Log.d(TAG, "Click Marker");
+                if (fragmentIsShowed == false) {
+                    Bundle bundle = new Bundle();
+                    bundle.putString("UserName", UserName);
+                    bundle.putDouble("Latitude", latitude);
+                    bundle.putDouble("Longitude", longitude);
+                    infoFragment.setArguments(bundle);
+                    fragmentManager = getFragmentManager();
+                    FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+                    fragmentTransaction.add(R.id.activity_home, infoFragment, "first");
+                    fragmentTransaction.commit();
+                    fragmentIsShowed = true;
+
+                } else {
+                    fragmentManager = getFragmentManager();
+                    FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+                    fragmentTransaction.remove(infoFragment);
+                    fragmentTransaction.commit();
+                    fragmentIsShowed = false;
+                }
+
+                return true;
+            }
+        });
+
     }
+
+
 }
