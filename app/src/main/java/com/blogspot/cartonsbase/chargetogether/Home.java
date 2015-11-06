@@ -23,6 +23,8 @@ import android.os.Message;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Display;
 import android.view.View;
@@ -52,7 +54,7 @@ import java.util.ArrayList;
 import java.util.Timer;
 import java.util.TimerTask;
 
-public class Home extends FragmentActivity implements LocationListener, OnMapReadyCallback {
+public class Home extends AppCompatActivity implements LocationListener, OnMapReadyCallback {
     private static final String TAG = "Home";
 
     //ArrayAdapter< String > provider_list;
@@ -87,6 +89,13 @@ public class Home extends FragmentActivity implements LocationListener, OnMapRea
     protected void onCreate( Bundle savedInstanceState ) {
         super.onCreate(savedInstanceState);
         setContentView( R.layout.activity_home );
+
+        Toolbar toolbar = (Toolbar)findViewById(R.id.app_bar);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setHomeButtonEnabled(true);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setTitle("Nearby providers");
 
         /*provider_list = new ArrayAdapter< String >( this, android.R.layout.simple_list_item_1 );
         ltv_provider = ( ListView ) findViewById( R.id.ltv_provider_list );

@@ -30,9 +30,12 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".Home" />
-        <activity android:name=".ChooseTypeActivity" />
-        <activity android:name=".Provider_page"/>
+        <activity android:name=".Home"
+            android:parentActivityName=".ChooseTypeActivity"/>
+        <activity android:name=".ChooseTypeActivity"
+            android:parentActivityName=".LoginActivity"/>
+        <activity android:name=".Provider_page"
+            android:parentActivityName=".Home"/>
         <!--
              The API key for Google Maps-based APIs is defined as a string resource.
              (See the file "res/values/google_maps_api.xml").
