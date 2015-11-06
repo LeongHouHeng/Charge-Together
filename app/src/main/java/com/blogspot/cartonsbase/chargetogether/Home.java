@@ -49,14 +49,13 @@ import com.google.gson.reflect.TypeToken;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Timer;
 import java.util.TimerTask;
 
-public class Home extends FragmentActivity implements LocationListener, OnMapReadyCallback {
+public class Home extends FragmentActivity implements OnMapReadyCallback {
     private static final String TAG = "Home";
 
-    //ArrayAdapter< String > provider_list;
-    //ListView ltv_provider;
     ContactServer contactServer;
     String UserName = "User";
 
@@ -67,8 +66,6 @@ public class Home extends FragmentActivity implements LocationListener, OnMapRea
     boolean GPSisOPEN = false;
     Location location;
 
-    //Button btn_showflag;
-
     Fragment infoFragment;
     FragmentManager fragmentManager;
 
@@ -77,10 +74,12 @@ public class Home extends FragmentActivity implements LocationListener, OnMapRea
 
     boolean fragmentIsShowed = false;
 
-    //Gson gson;
-
     boolean MapIsReady = false;
     ArrayList<JsonObj> jsonArr;
+
+    public HashMap<String, Marker> mapHash;
+
+    MyLocation myLocation;
 
     @Override
     @TargetApi( 23 )
@@ -88,20 +87,22 @@ public class Home extends FragmentActivity implements LocationListener, OnMapRea
         super.onCreate(savedInstanceState);
         setContentView( R.layout.activity_home );
 
-        /*provider_list = new ArrayAdapter< String >( this, android.R.layout.simple_list_item_1 );
-        ltv_provider = ( ListView ) findViewById( R.id.ltv_provider_list );
-        provider_list.add( "1" );
-        ltv_provider.setAdapter( provider_list );*/
         infoFragment = new InfoWindowFragment();
         contactServer = new ContactServer(getApplicationContext());
 
-        locationManager = ( LocationManager ) getSystemService(Context
-                .LOCATION_SERVICE);
-        if ( locationManager.isProviderEnabled( LocationManager.GPS_PROVIDER ) ||
-                locationManager.isProviderEnabled( LocationManager.NETWORK_PROVIDER ) ) {
-            GPSisOPEN = true;
-                //GPSSearch();
-        }
+        mapHash = new HashMap<>();
+
+        MyLocation.LocationResult lcaLocationResult = new MyLocation.LocationResult() {
+            @Override
+            public void gotLocation(Location location) {
+                Toast.makeText(getApplicationContext(), "Latitude: " + location.getLatitude() + ", Longitude: " +location.getLongitude(), Toast.LENGTH_SHORT).show();
+                latitude = location.getLatitude();
+                longitude = location.getLongitude();
+            }
+        };
+        myLocation = new MyLocation();
+        myLocation.getLocation(this, lcaLocationResult);
+
 
         fragment_map = (MapFragment) getFragmentManager().findFragmentById( R.id.frag_map );
         fragment_map.getMapAsync( this );
@@ -109,66 +110,16 @@ public class Home extends FragmentActivity implements LocationListener, OnMapRea
 
     }
 
-    public void GPSSearch() {
-        if ( Build.VERSION.SDK_INT >= 23 &&
-                ContextCompat.checkSelfPermission( getApplicationContext(), android.Manifest.permission.ACCESS_FINE_LOCATION ) != PackageManager.PERMISSION_GRANTED &&
-                ContextCompat.checkSelfPermission( getApplicationContext(), android.Manifest.permission.ACCESS_COARSE_LOCATION ) != PackageManager.PERMISSION_GRANTED ) {
-            return;
-        }
-        Criteria criteria = new Criteria();
-        bestGPSProvider = locationManager.getBestProvider(criteria, true);
-
-        location = locationManager.getLastKnownLocation(bestGPSProvider);
-
-        latitude = location.getLatitude();
-        longitude = location.getLongitude();
-
-        Toast.makeText( getApplicationContext(), "Latitude: " + latitude + "\nLongitude" + longitude, Toast.LENGTH_SHORT ).show();
-        Log.d(TAG, "Latitude: " + latitude + "\nLongitude" + longitude);
-
-        /*LatLng IamHere = new LatLng(latitude, longitude );
-        map.addMarker( new MarkerOptions().position( IamHere ).title( "I am Here" ).snippet
-                ( "and" + " snippet" ).icon( BitmapDescriptorFactory.defaultMarker( BitmapDescriptorFactory
-                .HUE_BLUE ) ) );
-        map.moveCamera( CameraUpdateFactory.newLatLngZoom( IamHere, 15.0f ) );*/
-
-    }
-
-    @Override
-    public void onLocationChanged( Location location ) {
-        //Toast.makeText( getApplicationContext(), "Location Update: " + "\nLatitude: " + latitude + "\nLongitude" + longitude, Toast.LENGTH_SHORT ).show();
-        GPSSearch();
-
-
-    }
-
-    @Override
-    public void onStatusChanged( String provider, int status, Bundle extras ) {
-
-    }
-
-    @Override
-    public void onProviderEnabled( String provider ) {
-
-    }
-
-    @Override
-    public void onProviderDisabled( String provider ) {
-
-    }
-
     @Override
     protected void onResume() {
         super.onResume();
-        if ( GPSisOPEN ) {
             if ( Build.VERSION.SDK_INT >= 23 &&
                     ContextCompat.checkSelfPermission( getApplicationContext(), android.Manifest.permission.ACCESS_FINE_LOCATION ) != PackageManager.PERMISSION_GRANTED &&
                     ContextCompat.checkSelfPermission( getApplicationContext(), android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
                 return  ;
             }
-            locationManager.requestLocationUpdates( bestGPSProvider, 1000, 1, this );
-            //Add marker dynamically.
 
+            //Add marker dynamically.
             Timer timer = new Timer();
             timer.schedule(new TimerTask() {
                 @Override
@@ -192,9 +143,12 @@ public class Home extends FragmentActivity implements LocationListener, OnMapRea
                                         Log.d(TAG, "GPSx: " + String.valueOf(obj.gps_x) + " GPSy: " + String.valueOf(obj.gps_y));
 
                                         LatLng provider = new LatLng(obj.gps_x, obj.gps_y);
-                                        map.addMarker(new MarkerOptions().position(provider).title("Provider").snippet
-                                                ("and" + " snippet").icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory
+                                        Marker marker = map.addMarker(new MarkerOptions().position(provider).title(obj.UserName).snippet
+                                                (obj.UserId + "-" + obj.power_bank_spec).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory
                                                 .HUE_YELLOW)));
+
+                                        mapHash.put(marker.getId(), marker);
+
 
                                     }
                                 }
@@ -211,7 +165,7 @@ public class Home extends FragmentActivity implements LocationListener, OnMapRea
 
 
 
-        }
+        //}
 
 
     }
@@ -219,16 +173,7 @@ public class Home extends FragmentActivity implements LocationListener, OnMapRea
     @Override
     protected void onPause() {
         super.onPause();
-        if ( GPSisOPEN ) {
-            if ( Build.VERSION.SDK_INT >= Build.VERSION_CODES.M ) {
-                if ( checkSelfPermission( Manifest.permission.ACCESS_FINE_LOCATION ) !=
-                        PackageManager.PERMISSION_GRANTED && checkSelfPermission( Manifest.permission
-                        .ACCESS_COARSE_LOCATION ) != PackageManager.PERMISSION_GRANTED ) {
-                    return;
-                }
-            }
-            locationManager.removeUpdates( this );
-        }
+
     }
 
     @Override
@@ -238,17 +183,6 @@ public class Home extends FragmentActivity implements LocationListener, OnMapRea
         MapIsReady = true;
         contactServer = new ContactServer(getApplicationContext());
         contactServer.getHelp(latitude, longitude);
-
-/*
-        Gson gson = new Gson();
-        Type listType = new TypeToken<ArrayList<JsonObj>>() {}.getType();
-        ArrayList<JsonObj> jsonArr = gson.fromJson(jsonStr, listType);
-        for(JsonObj obj : jsonArr){
-            LatLng provider = new LatLng(obj.gps_x, obj.gps_y);
-            map.addMarker( new MarkerOptions().position( provider ).title( "Provider" ).snippet
-                    ( "and" + " snippet" ).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory
-                    .HUE_RED)) );
-        }*/
 
         LatLng IamHere = new LatLng(22.114720, 113.325730 );
         map.addMarker( new MarkerOptions().position( IamHere ).title( "I am Here" ).snippet
@@ -269,11 +203,14 @@ public class Home extends FragmentActivity implements LocationListener, OnMapRea
                 //Toast.makeText(getApplicationContext(), "Click", Toast.LENGTH_SHORT).show();
                 Log.d(TAG, "Click Marker");
                 if (fragmentIsShowed == false) {
+
                     Bundle bundle = new Bundle();
-                    bundle.putString("UserName", UserName);
-                    bundle.putDouble("Latitude", latitude);
-                    bundle.putDouble("Longitude", longitude);
+                    bundle.putString("UserName", mapHash.get(marker.getId()).getTitle());
+                    bundle.putDouble("Latitude", mapHash.get(marker.getId()).getPosition().latitude);
+                    bundle.putDouble("Longitude", mapHash.get(marker.getId()).getPosition().longitude);
+                    bundle.putString("UserId&PowerBankSpec", mapHash.get(marker.getId()).getSnippet().toString());
                     infoFragment.setArguments(bundle);
+
                     fragmentManager = getFragmentManager();
                     FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
                     fragmentTransaction.add(R.id.activity_home, infoFragment, "first");

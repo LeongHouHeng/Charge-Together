@@ -16,4 +16,7 @@ public class JsonObj {
     @SerializedName("gps_y")
     public double gps_y;
 
+    @SerializedName("power_bank_spec")
+    public String power_bank_spec;
+
 }

@@ -17,23 +17,37 @@ import android.widget.Toast;
  */
 public class InfoWindowFragment extends Fragment{
 
-    private static final String TAG = "InfoWindowFragment Debugger";
+    private static final String TAG = "InfoWindowFragment";
 
     double latitude, longitude;
     String UserName;
+    String UserId;
+    String power_bank_spec;
 
     View view;
 
     TextView tv_username;
 
+    Provider_page pp;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         view = inflater.inflate( R.layout.fragment_infowindow, container, false );
+
+        pp = new Provider_page();
+
         Bundle bundle = getArguments();
         latitude = bundle.getDouble( "Latitude" );
         longitude = bundle.getDouble( "Longitude" );
         UserName = bundle.getString("UserName");
+        String str = bundle.getString("UserId&PowerBankSpec");
 
+        String array[] = str.split("-");
+        Log.e(TAG, array[0] + " " + array[1]);
+        UserId = array[0];
+        power_bank_spec = array[1];
+
+        //Log.e(TAG, str);
         tv_username = (TextView)view.findViewById( R.id.UserName );
         tv_username.setText( "UseName: " + UserName );
 
@@ -44,6 +58,13 @@ public class InfoWindowFragment extends Fragment{
                 if(event.getAction() == MotionEvent.ACTION_DOWN){
 
                     Log.d(TAG, "Click fragment");
+
+                    Bundle bundle = getArguments();
+                    bundle.putDouble("Latitude", latitude);
+                    bundle.putDouble("Longitude", longitude);
+                    bundle.putString("UserName", UserName);
+                    bundle.putString("UserId", UserId);
+                    bundle.putString("power_bank_spec", power_bank_spec);
 
                     Intent intent = new Intent();
                     intent.setClass(getActivity(), Provider_page.class);

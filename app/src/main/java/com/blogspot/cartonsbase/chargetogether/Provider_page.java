@@ -2,6 +2,7 @@ package com.blogspot.cartonsbase.chargetogether;
 
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
+import android.util.Log;
 
 import com.blogspot.cartonsbase.chargetogether.Network.JSON.JsonObj;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -15,6 +16,8 @@ import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.gson.Gson;
 
 public class Provider_page extends FragmentActivity implements OnMapReadyCallback{
+
+    private static final String TAG = "Provider_page";
 
     Gson gson;
 
@@ -30,6 +33,11 @@ public class Provider_page extends FragmentActivity implements OnMapReadyCallbac
 
         fragment_map = (MapFragment) getFragmentManager().findFragmentById( R.id.frag_map_provider );
         fragment_map.getMapAsync( this );
+
+
+       /* Bundle bundle = new Bundle();
+        UserName = bundle.getString("UserName");
+        Log.d(TAG, UserName);*/
 
     }
 
@@ -47,12 +55,8 @@ public class Provider_page extends FragmentActivity implements OnMapReadyCallbac
                 .HUE_RED ) ) );
         map.moveCamera(CameraUpdateFactory.newLatLngZoom(IamHere, 20.0f));
 
-        /*map.moveCamera(CameraUpdateFactory.newLatLngZoom(
-                new LatLng(22.114720, 113.325830), 15.0f));
-*/
-        // Polylines are useful for marking paths and routes on the map.
         map.addPolyline(new PolylineOptions().geodesic(true)
-                .add(new LatLng(22.114720, 113.325830))  // Hawaii
+                .add(new LatLng(22.114720, 113.325830))
                 .add(new LatLng(22.114750, 113.325840))
         );
     }
