@@ -18,6 +18,7 @@ import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Looper;
 import android.os.Message;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
@@ -76,8 +77,10 @@ public class Home extends FragmentActivity implements LocationListener, OnMapRea
 
     boolean fragmentIsShowed = false;
 
-    DynamicAddMarker dam;
     //Gson gson;
+
+    boolean MapIsReady = false;
+    ArrayList<JsonObj> jsonArr;
 
     @Override
     @TargetApi( 23 )
@@ -102,7 +105,6 @@ public class Home extends FragmentActivity implements LocationListener, OnMapRea
 
         fragment_map = (MapFragment) getFragmentManager().findFragmentById( R.id.frag_map );
         fragment_map.getMapAsync( this );
-        dam = new DynamicAddMarker(map);
 
 
     }
@@ -166,24 +168,47 @@ public class Home extends FragmentActivity implements LocationListener, OnMapRea
             }
             locationManager.requestLocationUpdates( bestGPSProvider, 1000, 1, this );
             //Add marker dynamically.
-/*
 
             Timer timer = new Timer();
             timer.schedule(new TimerTask() {
                 @Override
                 public void run() {
                     if(ContactServer.ServerRequestUpdate){
-                        String jsonStr = contactServer.getServerRequest();
-                        Log.d(TAG, jsonStr);
+                        if(MapIsReady) {
 
-                        dam.execute(jsonStr);
+                            String jsonStr = contactServer.getServerRequest();
+                            Log.d(TAG, jsonStr);
+
+                            Gson gson = new Gson();
+                            Type listType = new TypeToken<ArrayList<JsonObj>>() {
+                            }.getType();
+                            jsonArr = gson.fromJson(jsonStr, listType);
+
+                            Handler handler = new Handler(Looper.getMainLooper());
+                            handler.post(new Runnable() {
+                                @Override
+                                public void run() {
+                                    for(JsonObj obj : jsonArr){
+                                        Log.d(TAG, "GPSx: " + String.valueOf(obj.gps_x) + " GPSy: " + String.valueOf(obj.gps_y));
+
+                                        LatLng provider = new LatLng(obj.gps_x, obj.gps_y);
+                                        map.addMarker(new MarkerOptions().position(provider).title("Provider").snippet
+                                                ("and" + " snippet").icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory
+                                                .HUE_YELLOW)));
+
+                                    }
+                                }
+                            });
+
+
+                        }
                     }else{
                         contactServer.getHelp(latitude, longitude);
 
                     }
                 }
             }, 100, 5000);
-*/
+
 
 
         }
@@ -210,6 +235,7 @@ public class Home extends FragmentActivity implements LocationListener, OnMapRea
     public void onMapReady( GoogleMap googleMap ) {
         //Toast.makeText( getApplicationContext(), "onMapReady", Toast.LENGTH_SHORT ).show();
         map = googleMap;
+        MapIsReady = true;
         contactServer = new ContactServer(getApplicationContext());
         contactServer.getHelp(latitude, longitude);
 
