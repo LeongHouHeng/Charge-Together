@@ -9,6 +9,7 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -23,6 +24,7 @@ public class InfoWindowFragment extends Fragment{
     String UserName;
     String UserId;
     String power_bank_spec;
+    Button detailsBtn;
 
     View view;
 
@@ -34,6 +36,7 @@ public class InfoWindowFragment extends Fragment{
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         view = inflater.inflate( R.layout.fragment_infowindow, container, false );
 
+        detailsBtn = (Button) view.findViewById(R.id.detailsBtn);
         pp = new Provider_page();
 
         Bundle bundle = getArguments();
@@ -48,31 +51,25 @@ public class InfoWindowFragment extends Fragment{
         power_bank_spec = array[1];
 
         //Log.e(TAG, str);
-        tv_username = (TextView)view.findViewById( R.id.UserName );
-        tv_username.setText( "UseName: " + UserName );
+        tv_username = (TextView)view.findViewById(R.id.UserName);
+        tv_username.setText( UserName );
 
-        view.setOnTouchListener(new View.OnTouchListener() {
+
+        detailsBtn.setOnClickListener(new View.OnClickListener() {
             @Override
-            public boolean onTouch(View v, MotionEvent event) {
+            public void onClick(View v) {
+                Log.d(TAG, "Click fragment");
 
-                if(event.getAction() == MotionEvent.ACTION_DOWN){
+                Bundle bundle = getArguments();
+                bundle.putDouble("Latitude", latitude);
+                bundle.putDouble("Longitude", longitude);
+                bundle.putString("UserName", UserName);
+                bundle.putString("UserId", UserId);
+                bundle.putString("power_bank_spec", power_bank_spec);
 
-                    Log.d(TAG, "Click fragment");
-
-                    Bundle bundle = getArguments();
-                    bundle.putDouble("Latitude", latitude);
-                    bundle.putDouble("Longitude", longitude);
-                    bundle.putString("UserName", UserName);
-                    bundle.putString("UserId", UserId);
-                    bundle.putString("power_bank_spec", power_bank_spec);
-
-                    Intent intent = new Intent();
-                    intent.setClass(getActivity(), Provider_page.class);
-                    getActivity().startActivity(intent);
-
-                }
-
-                return true;
+                Intent intent = new Intent();
+                intent.setClass(getActivity(), Provider_page.class);
+                getActivity().startActivity(intent);
             }
         });
 
