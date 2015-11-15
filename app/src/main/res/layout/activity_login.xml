@@ -51,7 +51,8 @@
                 android:hint="@string/prompt_name"
                 android:inputType="textEmailAddress"
                 android:maxLines="1"
-                android:singleLine="true" />
+                android:singleLine="true"
+                android:text="Steven Walker"/>
 
         </android.support.design.widget.TextInputLayout>
 

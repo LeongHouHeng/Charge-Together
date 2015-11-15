@@ -206,10 +206,10 @@ public class Home extends AppCompatActivity implements OnMapReadyCallback {
                 .HUE_BLUE ) ) );
         map.moveCamera(CameraUpdateFactory.newLatLngZoom(IamHere, 15.0f));
 
-        LatLng Provider = new LatLng(22.114720, 113.325840 );
+       /* LatLng Provider = new LatLng(22.114720, 113.325840 );
         map.addMarker( new MarkerOptions().position( Provider ).title( "ABC" ).snippet
                 ( "and" + " snippet" ).icon( BitmapDescriptorFactory.defaultMarker( BitmapDescriptorFactory
-                .HUE_RED ) ) );
+                .HUE_YELLOW ) ) );*/
         map.moveCamera(CameraUpdateFactory.newLatLngZoom(IamHere, 15.0f));
 
 

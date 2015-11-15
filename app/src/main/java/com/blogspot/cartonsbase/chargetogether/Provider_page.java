@@ -50,9 +50,9 @@ public class Provider_page extends FragmentActivity implements OnMapReadyCallbac
                 .HUE_BLUE) ) );
 
         LatLng Provider = new LatLng(22.114750, 113.325840 );
-        map.addMarker( new MarkerOptions().position( Provider ).title( "ABC" ).snippet
+        map.addMarker( new MarkerOptions().position( Provider ).title( "John Williams" ).snippet
                 ( "and" + " snippet" ).icon( BitmapDescriptorFactory.defaultMarker( BitmapDescriptorFactory
-                .HUE_RED ) ) );
+                .HUE_YELLOW ) ) );
         map.moveCamera(CameraUpdateFactory.newLatLngZoom(IamHere, 20.0f));
 
         map.addPolyline(new PolylineOptions().geodesic(true)
