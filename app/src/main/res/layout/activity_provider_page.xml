@@ -5,19 +5,19 @@
     android:layout_height="match_parent">
 
 
+    <include layout="@layout/app_bar"
+        android:id="@+id/app_bar"/>
     <fragment
         android:id="@+id/frag_map_provider"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_weight="4"
+        android:layout_height="160dp"
         class="com.google.android.gms.maps.MapFragment"
         />
 
     <fragment
         android:id="@+id/frag_provider"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_weight="1"
+        android:layout_height="fill_parent"
         class="com.blogspot.cartonsbase.chargetogether.ProviderPageFrag"
         />
 <!--

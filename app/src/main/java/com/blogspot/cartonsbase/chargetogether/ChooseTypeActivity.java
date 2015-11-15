@@ -35,7 +35,7 @@ public class ChooseTypeActivity extends AppCompatActivity{
                 Intent intent = new Intent(  );
                 intent.setClass( ChooseTypeActivity.this, Home.class );
                 startActivity( intent );
-                finish();
+
             }
         } );
 

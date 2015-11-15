@@ -2,6 +2,8 @@ package com.blogspot.cartonsbase.chargetogether;
 
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 
 import com.blogspot.cartonsbase.chargetogether.Network.JSON.JsonObj;
@@ -15,7 +17,7 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.gson.Gson;
 
-public class Provider_page extends FragmentActivity implements OnMapReadyCallback{
+public class Provider_page extends AppCompatActivity implements OnMapReadyCallback{
 
     private static final String TAG = "Provider_page";
 
@@ -35,9 +37,16 @@ public class Provider_page extends FragmentActivity implements OnMapReadyCallbac
         fragment_map.getMapAsync( this );
 
 
-       /* Bundle bundle = new Bundle();
-        UserName = bundle.getString("UserName");
-        Log.d(TAG, UserName);*/
+//        Bundle bundle = new Bundle();
+//        UserName = bundle.getString("UserName");
+//        Log.d(TAG, UserName);
+
+        Toolbar toolbar = (Toolbar)findViewById(R.id.app_bar);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setHomeButtonEnabled(true);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setTitle("Details");
 
     }
 

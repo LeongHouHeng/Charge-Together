@@ -21,24 +21,27 @@
         android:paddingRight="@dimen/activity_horizontal_margin"
         >
 
+
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Charge Together"
+            android:textAlignment="center"
+            android:textSize="40sp"
+            android:paddingTop="100dp"
+            android:paddingBottom="24dp"
+            android:textColor="@android:color/white"
+            android:textStyle="bold"/>
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="A power bank sharing platform"
             android:textColor="@android:color/white"
+            android:textAlignment="center"
+            android:paddingBottom="48dp"
             android:textSize="16sp"
             />
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Welcome"
-            android:textAlignment="center"
-            android:textSize="50sp"
-            android:paddingTop="80dp"
-            android:paddingBottom="60dp"
-            android:textColor="@android:color/white"
-            android:textStyle="bold"/>
 
         <android.support.design.widget.TextInputLayout
             android:layout_width="match_parent"
@@ -62,7 +65,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
-            android:text="SIGN IN"
+            android:text="SIGN UP"
             android:textStyle="bold" />
 
         <TextView

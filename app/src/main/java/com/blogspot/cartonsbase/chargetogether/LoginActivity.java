@@ -59,6 +59,7 @@ public class LoginActivity extends AppCompatActivity {
 //        getSupportActionBar().setHomeButtonEnabled(true);
 //        getSupportActionBar().setDisplayShowHomeEnabled(true);
 //        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setTitle("");
 
         etv_username = (EditText)findViewById( R.id.login_name );
         login = (Button)findViewById( R.id.email_sign_in_button );
@@ -73,7 +74,6 @@ public class LoginActivity extends AppCompatActivity {
                     intent.setClass( LoginActivity.this, ChooseTypeActivity.class );
                     intent.putExtra( "UserName", UserName );
                     startActivity( intent );
-                    finish();
                 }else{
                     Toast.makeText(getApplicationContext(), "Please type your name...", Toast.LENGTH_SHORT).show();
                 }
